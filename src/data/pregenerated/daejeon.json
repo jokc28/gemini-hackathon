@@ -1,0 +1,85 @@
+{
+  "videoId": "Hcj7kCHwz4k",
+  "videoTitle": "🇰🇷 South Korea - Daejeon: 5 Minutes Walking Tour - 4K",
+  "regionName": "Daejeon",
+  "missions": [
+    {
+      "timestamp": 58,
+      "missionType": "jump",
+      "prompt": "앞으로 점프하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 112,
+      "missionType": "jump",
+      "prompt": "계단을 뛰어내려가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 129,
+      "missionType": "dodge_left",
+      "prompt": "사람을 피해서 왼쪽으로!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 150,
+      "missionType": "jump",
+      "prompt": "장애물을 점프하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 209,
+      "missionType": "dodge_right",
+      "prompt": "오른쪽으로 몸을 숙이세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 234,
+      "missionType": "push",
+      "prompt": "문을 열고 들어가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 311,
+      "missionType": "catch",
+      "prompt": "떨어지는 과일을 잡으세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 320,
+      "missionType": "dodge_right",
+      "prompt": "물줄기를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 331,
+      "missionType": "throw",
+      "prompt": "물고기에게 먹이를 던지세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 351,
+      "missionType": "jump",
+      "prompt": "다리를 점프해서 건너세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 408,
+      "missionType": "dodge_left",
+      "prompt": "식물을 피해서 지나가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 435,
+      "missionType": "push",
+      "prompt": "문 밖으로 밀고 나가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 454,
+      "missionType": "dodge_right",
+      "prompt": "오른쪽으로 움직여서 전시물을 보세요!",
+      "timeLimit": 3
+    }
+  ]
+}

@@ -1,7 +1,7 @@
-import { MotionDebug } from './modules/motion/MotionDebug';
+import { GameRoot } from './modules/ui/GameRoot';
 
 function App() {
-  return <MotionDebug />;
+  return <GameRoot />;
 }
 
 export default App;

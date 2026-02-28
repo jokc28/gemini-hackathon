@@ -1,34 +1,87 @@
-import { getMissionsForRegion } from './index.js'
-import { listCachedRegions } from './cache.js'
+import { searchVideos } from './youtube/searchVideos.js'
+import { analyzeVideoForMissions } from './gemini/analyzeVideo.js'
+import { loadCachedMissions, saveMissionsToCache, listCachedRegions } from './cache.js'
+import { validateConfig } from './config.js'
 
-const DEMO_REGIONS = ['Tokyo', 'Paris', 'New York', 'Seoul', 'London']
+const KOREAN_CITIES = ['Seoul', 'Busan', 'Incheon', 'Daegu', 'Daejeon', 'Gwangju', 'Suwon', 'Jeju', 'Jeonju']
 
-async function processRegion(region: string): Promise<void> {
-  try {
-    console.log(`\n=== ${region} 처리 중 ===`)
-    const result = await getMissionsForRegion(region)
-    console.log(`✓ ${region}: ${result.missions.length}개 미션`)
-    console.log(`  영상: "${result.videoTitle}" (${result.videoId})`)
-    for (const m of result.missions) {
-      console.log(`  [${m.timestamp}초] ${m.missionType} — "${m.prompt}"`)
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function processCity(city: string): Promise<void> {
+  // Check if already cached
+  const cached = await loadCachedMissions(city)
+  if (cached) {
+    console.log(`✓ ${city}: already cached (${cached.missions.length} missions, video=${cached.videoId})`)
+    return
+  }
+
+  console.log(`\n=== ${city} 처리 중 ===`)
+
+  // Search YouTube for a POV walking tour
+  console.log(`  Searching YouTube for "${city} walking tour"...`)
+  const videos = await searchVideos(city)
+  if (videos.length === 0) {
+    console.error(`  ✗ No videos found for ${city}`)
+    return
+  }
+
+  const video = videos[0]
+  console.log(`  Found: "${video.title}" (${video.videoId})`)
+
+  // Generate missions with Gemini (retry on rate limit)
+  let missions
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      console.log(`  Analyzing video with Gemini...${attempt > 0 ? ` (retry ${attempt})` : ''}`)
+      missions = await analyzeVideoForMissions(video.videoId)
+      break
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      if (msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED') || msg.includes('quota')) {
+        console.log(`  ⏳ Rate limited, waiting 35 seconds...`)
+        await sleep(35000)
+      } else {
+        throw err
+      }
     }
-  } catch (error) {
-    console.error(`✗ ${region} 실패:`, error instanceof Error ? error.message : error)
+  }
+
+  if (!missions) {
+    console.error(`  ✗ Failed to generate missions for ${city} after retries`)
+    return
+  }
+
+  console.log(`  Generated ${missions.length} missions`)
+
+  // Save to cache
+  await saveMissionsToCache({
+    videoId: video.videoId,
+    videoTitle: video.title,
+    regionName: city,
+    missions,
+  })
+  console.log(`  ✓ Saved to cache`)
+
+  for (const m of missions) {
+    console.log(`  [${m.timestamp}s] ${m.missionType} — "${m.prompt}"`)
   }
 }
 
 async function main() {
-  console.log('=== 데모용 미션 사전 생성 ===')
-  console.log(`대상 지역: ${DEMO_REGIONS.join(', ')}\n`)
+  validateConfig()
+
+  console.log('=== 한국 도시 미션 사전 생성 ===')
+  console.log(`대상 도시: ${KOREAN_CITIES.join(', ')}\n`)
 
   const cached = await listCachedRegions()
   if (cached.length > 0) {
-    console.log(`이미 캐시됨: ${cached.join(', ')}`)
-    console.log('(캐시된 지역은 API 호출 없이 즉시 로드됨)\n')
+    console.log(`이미 캐시됨: ${cached.join(', ')}\n`)
   }
 
-  for (const region of DEMO_REGIONS) {
-    await processRegion(region)
+  for (const city of KOREAN_CITIES) {
+    await processCity(city)
   }
 
   console.log('\n=== 완료 ===')

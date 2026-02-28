@@ -1,0 +1,97 @@
+{
+  "videoId": "tpkzP3x0zPU",
+  "videoTitle": "Daegu, South Korea walking tour || 4k HDR  @WanderlustChronicles007",
+  "regionName": "Daegu",
+  "missions": [
+    {
+      "timestamp": 8,
+      "missionType": "dodge_left",
+      "prompt": "차를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 23,
+      "missionType": "dodge_right",
+      "prompt": "남자를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 57,
+      "missionType": "dodge_left",
+      "prompt": "차를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 102,
+      "missionType": "dodge_right",
+      "prompt": "오토바이를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 138,
+      "missionType": "dodge_left",
+      "prompt": "차를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 181,
+      "missionType": "dodge_right",
+      "prompt": "남자를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 203,
+      "missionType": "dodge_left",
+      "prompt": "배달원을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 229,
+      "missionType": "dodge_right",
+      "prompt": "스포츠카를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 267,
+      "missionType": "dodge_left",
+      "prompt": "사람들을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 316,
+      "missionType": "dodge_right",
+      "prompt": "남자를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 335,
+      "missionType": "dodge_left",
+      "prompt": "오토바이를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 378,
+      "missionType": "dodge_right",
+      "prompt": "오토바이를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 428,
+      "missionType": "dodge_left",
+      "prompt": "오토바이를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 445,
+      "missionType": "dodge_right",
+      "prompt": "사람들을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 490,
+      "missionType": "dodge_left",
+      "prompt": "남자를 피하세요!",
+      "timeLimit": 3
+    }
+  ]
+}

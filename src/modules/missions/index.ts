@@ -1,30 +1,27 @@
 /**
- * Frontend mission loader — loads pregenerated mission data from B module.
- *
- * Usage by Person C:
- * ```ts
- * import { getMissionsForRegion, getAvailableRegions } from './modules/missions';
- *
- * const regions = getAvailableRegions();  // ['tokyo', 'paris', 'seoul', ...]
- * const data = await getMissionsForRegion('tokyo');
- * // → { videoId, videoTitle, regionName, missions: MissionTimestamp[] }
- * ```
+ * Frontend mission loader — loads pregenerated mission data for Korean cities.
  */
 import type { RegionMissionData } from '../motion/types';
 
 // Static imports of pregenerated JSON (Vite handles these at build time)
-import tokyoData from '../../data/pregenerated/tokyo.json';
-import parisData from '../../data/pregenerated/paris.json';
 import seoulData from '../../data/pregenerated/seoul.json';
-import londonData from '../../data/pregenerated/london.json';
-import newYorkData from '../../data/pregenerated/new-york.json';
+import busanData from '../../data/pregenerated/busan.json';
+import incheonData from '../../data/pregenerated/incheon.json';
+import daeguData from '../../data/pregenerated/daegu.json';
+import daejeonData from '../../data/pregenerated/daejeon.json';
+import gwangjuData from '../../data/pregenerated/gwangju.json';
+import suwonData from '../../data/pregenerated/suwon.json';
+import jejuData from '../../data/pregenerated/jeju.json';
 
 const PREGENERATED: Record<string, RegionMissionData> = {
-  tokyo: tokyoData as unknown as RegionMissionData,
-  paris: parisData as unknown as RegionMissionData,
   seoul: seoulData as unknown as RegionMissionData,
-  london: londonData as unknown as RegionMissionData,
-  'new-york': newYorkData as unknown as RegionMissionData,
+  busan: busanData as unknown as RegionMissionData,
+  incheon: incheonData as unknown as RegionMissionData,
+  daegu: daeguData as unknown as RegionMissionData,
+  daejeon: daejeonData as unknown as RegionMissionData,
+  gwangju: gwangjuData as unknown as RegionMissionData,
+  suwon: suwonData as unknown as RegionMissionData,
+  jeju: jejuData as unknown as RegionMissionData,
 };
 
 /**

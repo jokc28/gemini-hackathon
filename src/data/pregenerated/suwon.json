@@ -1,0 +1,97 @@
+{
+  "videoId": "75avfAmbwKs",
+  "videoTitle": "4K Walking Tour: Discover the Vibrant Streets of Suwon",
+  "regionName": "Suwon",
+  "missions": [
+    {
+      "timestamp": 15,
+      "missionType": "dodge_right",
+      "prompt": "빠르게 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 27,
+      "missionType": "dodge_left",
+      "prompt": "왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 42,
+      "missionType": "jump",
+      "prompt": "계단을 점프!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 58,
+      "missionType": "push",
+      "prompt": "앞으로 전진!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 75,
+      "missionType": "dodge_left",
+      "prompt": "사람들을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 95,
+      "missionType": "jump",
+      "prompt": "크게 점프하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 115,
+      "missionType": "dodge_right",
+      "prompt": "오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 135,
+      "missionType": "catch",
+      "prompt": "음식을 받으세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 155,
+      "missionType": "push",
+      "prompt": "앞으로 나아가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 175,
+      "missionType": "dodge_left",
+      "prompt": "좁은 길을 지나세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 195,
+      "missionType": "throw",
+      "prompt": "물건을 던지세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 215,
+      "missionType": "jump",
+      "prompt": "힘껏 뛰어오르세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 235,
+      "missionType": "dodge_right",
+      "prompt": "오른쪽으로 빠져나가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 255,
+      "missionType": "push",
+      "prompt": "밀고 나가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 275,
+      "missionType": "catch",
+      "prompt": "상품을 잡으세요!",
+      "timeLimit": 3
+    }
+  ]
+}

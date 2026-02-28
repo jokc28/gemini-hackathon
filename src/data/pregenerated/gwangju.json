@@ -1,0 +1,97 @@
+{
+  "videoId": "FNwvX8vq7sw",
+  "videoTitle": "[4K] Korea Gwangju Afternoon view - Chungjangno / sightseeing",
+  "regionName": "Gwangju",
+  "missions": [
+    {
+      "timestamp": 24,
+      "missionType": "dodge_right",
+      "prompt": "벽화를 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 40,
+      "missionType": "push",
+      "prompt": "군중 속을 헤치고 나아가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 63,
+      "missionType": "jump",
+      "prompt": "원형 바닥을 점프해서 건너세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 71,
+      "missionType": "dodge_left",
+      "prompt": "이정표를 따라 왼쪽으로 비켜가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 95,
+      "missionType": "push",
+      "prompt": "친구들과 함께 앞으로 나아가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 115,
+      "missionType": "dodge_right",
+      "prompt": "우산을 쓴 사람을 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 127,
+      "missionType": "dodge_left",
+      "prompt": "좁은 골목을 왼쪽으로 통과하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 139,
+      "missionType": "push",
+      "prompt": "가판대를 지나쳐 가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 177,
+      "missionType": "dodge_right",
+      "prompt": "볼링 핀 간판을 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 190,
+      "missionType": "push",
+      "prompt": "쇼핑객들 사이를 헤쳐나가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 228,
+      "missionType": "dodge_left",
+      "prompt": "교차로에서 왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 240,
+      "missionType": "push",
+      "prompt": "지나가는 사람들을 피해서 직진하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 260,
+      "missionType": "dodge_right",
+      "prompt": "아이와 손잡은 사람들을 오른쪽으로 지나치세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 285,
+      "missionType": "push",
+      "prompt": "우산을 든 사람들을 지나쳐 가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 314,
+      "missionType": "catch",
+      "prompt": "맛있는 길거리 음식을 잡아보세요!",
+      "timeLimit": 3
+    }
+  ]
+}

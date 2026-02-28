@@ -1,0 +1,67 @@
+{
+  "videoId": "TWcKx-UUvLI",
+  "videoTitle": "Jeju Walking Tour Along HaYoung Olle Trail",
+  "regionName": "Jeju",
+  "missions": [
+    {
+      "timestamp": 79,
+      "missionType": "dodge_right",
+      "prompt": "오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 134,
+      "missionType": "jump",
+      "prompt": "점프하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 146,
+      "missionType": "dodge_left",
+      "prompt": "왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 168,
+      "missionType": "push",
+      "prompt": "강풍에 맞서 밀어내세요!",
+      "timeLimit": 3.5
+    },
+    {
+      "timestamp": 180,
+      "missionType": "jump",
+      "prompt": "계단을 점프하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 195,
+      "missionType": "dodge_right",
+      "prompt": "오른쪽으로 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 221,
+      "missionType": "jump",
+      "prompt": "징검다리를 점프하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 235,
+      "missionType": "dodge_left",
+      "prompt": "사람들을 피해 왼쪽으로 피하세요!",
+      "timeLimit": 3.5
+    },
+    {
+      "timestamp": 270,
+      "missionType": "push",
+      "prompt": "인파를 뚫고 나아가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 283,
+      "missionType": "jump",
+      "prompt": "결승선을 향해 점프!",
+      "timeLimit": 2.5
+    }
+  ]
+}
