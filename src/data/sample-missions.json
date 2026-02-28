@@ -1,0 +1,26 @@
+{
+  "tokyo_walk": {
+    "videoId": "dQw4w9WgXcQ",
+    "regionName": "Tokyo",
+    "missions": [
+      { "timestamp": 5,  "missionType": "dodge_left",  "prompt": "왼쪽으로 피하세요!", "timeLimit": 3 },
+      { "timestamp": 12, "missionType": "jump",         "prompt": "장애물을 넘으세요!", "timeLimit": 3 },
+      { "timestamp": 20, "missionType": "catch",        "prompt": "잡으세요!",         "timeLimit": 3 },
+      { "timestamp": 30, "missionType": "push",         "prompt": "문을 밀어요!",       "timeLimit": 3 },
+      { "timestamp": 40, "missionType": "dodge_right",  "prompt": "오른쪽으로 피하세요!", "timeLimit": 3 },
+      { "timestamp": 50, "missionType": "throw",        "prompt": "던지세요!",         "timeLimit": 3 }
+    ]
+  },
+  "paris_tour": {
+    "videoId": "dQw4w9WgXcQ",
+    "regionName": "Paris",
+    "missions": [
+      { "timestamp": 8,  "missionType": "wave",         "prompt": "인사하세요!",       "timeLimit": 3 },
+      { "timestamp": 18, "missionType": "duck",         "prompt": "숙이세요!",         "timeLimit": 3 },
+      { "timestamp": 25, "missionType": "catch",        "prompt": "잡으세요!",         "timeLimit": 3 },
+      { "timestamp": 35, "missionType": "punch",        "prompt": "펀치!",             "timeLimit": 2.5 },
+      { "timestamp": 45, "missionType": "jump",         "prompt": "점프하세요!",       "timeLimit": 3 },
+      { "timestamp": 55, "missionType": "clap",         "prompt": "박수쳐요!",         "timeLimit": 3 }
+    ]
+  }
+}
