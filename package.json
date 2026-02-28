@@ -1,0 +1,21 @@
+{
+  "name": "world-motion-conquest-b",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "tsx src/test.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^1.43.0",
+    "dotenv": "^17.3.1",
+    "googleapis": "^171.4.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
