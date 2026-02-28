@@ -1,0 +1,79 @@
+{
+  "videoId": "PS4rLoKq1lE",
+  "videoTitle": "FIRST Cherry Blossoms in Tokyo 2026! Kawazu Sakura Walking Tour - 4K HDR",
+  "regionName": "Tokyo",
+  "missions": [
+    {
+      "timestamp": 36,
+      "missionType": "jump",
+      "prompt": "계단을 점프해서 올라가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 62,
+      "missionType": "dodge_left",
+      "prompt": "사람들을 피해 왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 163,
+      "missionType": "dodge_right",
+      "prompt": "사람들을 피해 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 318,
+      "missionType": "dodge_left",
+      "prompt": "앞사람을 피해 왼쪽으로 이동하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 377,
+      "missionType": "dodge_right",
+      "prompt": "소년을 피해 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 496,
+      "missionType": "dodge_left",
+      "prompt": "가족을 피해 왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 547,
+      "missionType": "dodge_left",
+      "prompt": "다리 아래를 왼쪽으로 통과하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 587,
+      "missionType": "dodge_right",
+      "prompt": "앞사람을 피해 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 688,
+      "missionType": "dodge_left",
+      "prompt": "앞사람을 피해 왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 742,
+      "missionType": "dodge_right",
+      "prompt": "자전거를 피해 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 905,
+      "missionType": "dodge_left",
+      "prompt": "아이를 피해 왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 998,
+      "missionType": "catch",
+      "prompt": "벚꽃 잎을 잡으세요!",
+      "timeLimit": 2
+    }
+  ]
+}
