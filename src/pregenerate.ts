@@ -3,7 +3,10 @@ import { analyzeVideoForMissions } from './gemini/analyzeVideo.js'
 import { loadCachedMissions, saveMissionsToCache, listCachedRegions } from './cache.js'
 import { validateConfig } from './config.js'
 
-const KOREAN_CITIES = ['Seoul', 'Busan', 'Incheon', 'Daegu', 'Daejeon', 'Gwangju', 'Suwon', 'Jeju', 'Jeonju']
+const KOREAN_CITIES = ['Seoul', 'Busan', 'Incheon', 'Daegu', 'Daejeon', 'Gwangju', 'Suwon', 'Jeju']
+
+// Delay between cities to avoid Gemini rate limits (free tier: 250k tokens/min)
+const INTER_CITY_DELAY_MS = 15000
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -80,7 +83,16 @@ async function main() {
     console.log(`이미 캐시됨: ${cached.join(', ')}\n`)
   }
 
-  for (const city of KOREAN_CITIES) {
+  for (let i = 0; i < KOREAN_CITIES.length; i++) {
+    const city = KOREAN_CITIES[i]
+    // Add delay between uncached cities to avoid rate limits
+    if (i > 0) {
+      const prevCached = await loadCachedMissions(city)
+      if (!prevCached) {
+        console.log(`  ⏳ Waiting ${INTER_CITY_DELAY_MS / 1000}s before next city...`)
+        await sleep(INTER_CITY_DELAY_MS)
+      }
+    }
     await processCity(city)
   }
 

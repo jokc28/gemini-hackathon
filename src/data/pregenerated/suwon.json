@@ -4,93 +4,75 @@
   "regionName": "Suwon",
   "missions": [
     {
-      "timestamp": 15,
+      "timestamp": 21,
       "missionType": "dodge_right",
-      "prompt": "빠르게 피하세요!",
+      "prompt": "앞에서 걸어오는 커플을 오른쪽으로 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 27,
-      "missionType": "dodge_left",
-      "prompt": "왼쪽으로 피하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 42,
-      "missionType": "jump",
-      "prompt": "계단을 점프!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 58,
-      "missionType": "push",
-      "prompt": "앞으로 전진!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 75,
-      "missionType": "dodge_left",
-      "prompt": "사람들을 피하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 95,
-      "missionType": "jump",
-      "prompt": "크게 점프하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 115,
+      "timestamp": 48,
       "missionType": "dodge_right",
-      "prompt": "오른쪽으로 피하세요!",
+      "prompt": "다가오는 행인들을 오른쪽으로 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 135,
-      "missionType": "catch",
-      "prompt": "음식을 받으세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 155,
+      "timestamp": 77,
       "missionType": "push",
-      "prompt": "앞으로 나아가세요!",
-      "timeLimit": 3
+      "prompt": "앞을 가로막는 인파를 헤치고 나아가세요!",
+      "timeLimit": 4
     },
     {
-      "timestamp": 175,
-      "missionType": "dodge_left",
-      "prompt": "좁은 길을 지나세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 195,
-      "missionType": "throw",
-      "prompt": "물건을 던지세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 215,
-      "missionType": "jump",
-      "prompt": "힘껏 뛰어오르세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 235,
+      "timestamp": 118,
       "missionType": "dodge_right",
-      "prompt": "오른쪽으로 빠져나가세요!",
+      "prompt": "앞에서 걸어오는 커플을 오른쪽으로 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 255,
+      "timestamp": 157,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 지나가는 오토바이를 왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 182,
       "missionType": "push",
-      "prompt": "밀고 나가세요!",
+      "prompt": "붐비는 사람들 사이를 헤치고 나아가세요!",
+      "timeLimit": 4
+    },
+    {
+      "timestamp": 208,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 빠르게 오는 스쿠터를 왼쪽으로 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 275,
-      "missionType": "catch",
-      "prompt": "상품을 잡으세요!",
+      "timestamp": 258,
+      "missionType": "push",
+      "prompt": "많은 인파를 뚫고 앞으로 나아가세요!",
+      "timeLimit": 4
+    },
+    {
+      "timestamp": 315,
+      "missionType": "dodge_right",
+      "prompt": "뛰어오는 여성을 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 462,
+      "missionType": "dodge_right",
+      "prompt": "좁은 골목에서 뛰어오는 여성을 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 560,
+      "missionType": "dodge_right",
+      "prompt": "골목으로 들어오는 차를 오른쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 643,
+      "missionType": "dodge_right",
+      "prompt": "길을 건너는 행인을 오른쪽으로 피하세요!",
       "timeLimit": 3
     }
   ]

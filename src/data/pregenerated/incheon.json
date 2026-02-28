@@ -4,57 +4,93 @@
   "regionName": "Incheon",
   "missions": [
     {
-      "timestamp": 15,
+      "timestamp": 10,
       "missionType": "dodge_left",
-      "prompt": "사람들을 피하세요!",
+      "prompt": "오른쪽에서 오는 사람을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 45,
+      "timestamp": 28,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 오는 무리를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 108,
+      "missionType": "dodge_left",
+      "prompt": "앞에서 오는 커플을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 200,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 오는 두 여성을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 224,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 건너오는 사람들을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 238,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 오는 사람들을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 315,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽 쓰레기 더미를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 328,
+      "missionType": "dodge_left",
+      "prompt": "앞에서 오는 두 남성을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 345,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 오는 커플을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 415,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 오는 사람들을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 515,
       "missionType": "dodge_right",
-      "prompt": "차를 피하세요!",
+      "prompt": "왼쪽에서 오는 남성을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 70,
+      "timestamp": 607,
       "missionType": "dodge_left",
-      "prompt": "커플을 피하세요!",
+      "prompt": "오른쪽에서 건너오는 사람들을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 92,
-      "missionType": "dodge_right",
-      "prompt": "오토바이를 피하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 143,
-      "missionType": "jump",
-      "prompt": "횡단보도 점프!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 208,
+      "timestamp": 625,
       "missionType": "dodge_left",
-      "prompt": "뛰어오는 사람들을 피하세요!",
+      "prompt": "오른쪽에서 오는 사람들을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 260,
-      "missionType": "jump",
-      "prompt": "파도 점프!",
+      "timestamp": 635,
+      "missionType": "dodge_left",
+      "prompt": "앞에서 오는 사람들을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 335,
-      "missionType": "throw",
-      "prompt": "감자튀김 던지기!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 420,
-      "missionType": "catch",
-      "prompt": "하이파이브 받기!",
+      "timestamp": 647,
+      "missionType": "dodge_left",
+      "prompt": "앞에 멈춰선 사람들을 피하세요!",
       "timeLimit": 3
     }
   ]

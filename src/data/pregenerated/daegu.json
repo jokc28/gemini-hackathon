@@ -4,93 +4,93 @@
   "regionName": "Daegu",
   "missions": [
     {
-      "timestamp": 8,
+      "timestamp": 12,
       "missionType": "dodge_left",
-      "prompt": "차를 피하세요!",
+      "prompt": "오른쪽에서 오는 차량을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 23,
+      "timestamp": 26,
       "missionType": "dodge_right",
-      "prompt": "남자를 피하세요!",
+      "prompt": "왼쪽에서 뛰어오는 여성을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 57,
-      "missionType": "dodge_left",
-      "prompt": "차를 피하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 102,
+      "timestamp": 52,
       "missionType": "dodge_right",
-      "prompt": "오토바이를 피하세요!",
+      "prompt": "오른쪽에서 오는 쇼핑객을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 138,
-      "missionType": "dodge_left",
-      "prompt": "차를 피하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 181,
+      "timestamp": 110,
       "missionType": "dodge_right",
-      "prompt": "남자를 피하세요!",
+      "prompt": "왼쪽에서 다가오는 커플을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 203,
-      "missionType": "dodge_left",
-      "prompt": "배달원을 피하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 229,
+      "timestamp": 141,
       "missionType": "dodge_right",
-      "prompt": "스포츠카를 피하세요!",
+      "prompt": "왼쪽에서 다가오는 오토바이를 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 267,
-      "missionType": "dodge_left",
-      "prompt": "사람들을 피하세요!",
+      "timestamp": 200,
+      "missionType": "dodge_right",
+      "prompt": "왼쪽에서 오는 자전거를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 233,
+      "missionType": "dodge_right",
+      "prompt": "왼쪽에서 다가오는 여성을 피하세요!",
       "timeLimit": 3
     },
     {
       "timestamp": 316,
       "missionType": "dodge_right",
-      "prompt": "남자를 피하세요!",
+      "prompt": "왼쪽에서 건너오는 사람들을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 335,
+      "timestamp": 345,
       "missionType": "dodge_left",
-      "prompt": "오토바이를 피하세요!",
+      "prompt": "오른쪽에서 오는 차량을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 378,
+      "timestamp": 433,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 뛰어오는 남성을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 534,
       "missionType": "dodge_right",
-      "prompt": "오토바이를 피하세요!",
+      "prompt": "뒤에서 오는 오토바이를 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 428,
-      "missionType": "dodge_left",
-      "prompt": "오토바이를 피하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 445,
+      "timestamp": 600,
       "missionType": "dodge_right",
-      "prompt": "사람들을 피하세요!",
+      "prompt": "왼쪽에서 걸어오는 여성을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 490,
+      "timestamp": 648,
+      "missionType": "dodge_right",
+      "prompt": "왼쪽에서 오는 SUV를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 712,
+      "missionType": "dodge_right",
+      "prompt": "왼쪽에서 오는 자전거를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 808,
       "missionType": "dodge_left",
-      "prompt": "남자를 피하세요!",
+      "prompt": "오른쪽에서 오는 남성을 피하세요!",
       "timeLimit": 3
     }
   ]

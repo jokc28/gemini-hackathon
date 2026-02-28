@@ -4,93 +4,33 @@
   "regionName": "Busan",
   "missions": [
     {
-      "timestamp": 15,
-      "missionType": "push",
-      "prompt": "도심의 복잡한 길을 뚫고 나아가세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 29,
-      "missionType": "dodge_left",
-      "prompt": "빠르게 다가오는 차를 왼쪽으로 피하세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 108,
+      "timestamp": 345,
       "missionType": "dodge_right",
-      "prompt": "버스가 지나갑니다! 오른쪽으로 피하세요!",
+      "prompt": "교차로 왼쪽에서 오는 차량을 피하세요!",
       "timeLimit": 3
-    },
-    {
-      "timestamp": 120,
-      "missionType": "dodge_left",
-      "prompt": "좁은 건물 숲 사이를 왼쪽으로 빠져나가세요!",
-      "timeLimit": 2.5
-    },
-    {
-      "timestamp": 140,
-      "missionType": "jump",
-      "prompt": "높은 아파트 건물을 가볍게 뛰어넘으세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 205,
-      "missionType": "push",
-      "prompt": "시원하게 뻗은 다리를 가로질러 달려가세요!",
-      "timeLimit": 3
-    },
-    {
-      "timestamp": 240,
-      "missionType": "dodge_right",
-      "prompt": "안개 속에서 나타난 차를 오른쪽으로 피하세요!",
-      "timeLimit": 3.5
     },
     {
       "timestamp": 355,
       "missionType": "dodge_left",
-      "prompt": "구불구불한 산길을 왼쪽으로 돌파하세요!",
-      "timeLimit": 2.5
-    },
-    {
-      "timestamp": 505,
-      "missionType": "jump",
-      "prompt": "퇴근길 정체를 가볍게 뛰어넘으세요!",
+      "prompt": "오른쪽에서 오는 차를 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 535,
-      "missionType": "throw",
-      "prompt": "복잡한 교차로에 활기를 불어넣으세요!",
-      "timeLimit": 4
-    },
-    {
-      "timestamp": 550,
+      "timestamp": 367,
       "missionType": "dodge_left",
-      "prompt": "야경 속 빌딩 사이를 왼쪽으로 피하세요!",
-      "timeLimit": 2.5
-    },
-    {
-      "timestamp": 600,
-      "missionType": "dodge_right",
-      "prompt": "반대편에서 오는 빛을 오른쪽으로 피하세요!",
-      "timeLimit": 2.5
-    },
-    {
-      "timestamp": 628,
-      "missionType": "catch",
-      "prompt": "공원 위를 날아다니는 자유를 붙잡으세요!",
+      "prompt": "오른쪽에서 갑자기 나타난 차량을 피하세요!",
       "timeLimit": 3
     },
     {
-      "timestamp": 735,
+      "timestamp": 377,
       "missionType": "dodge_left",
-      "prompt": "다리 아래로 왼쪽으로 통과하세요!",
+      "prompt": "오른쪽에서 좌회전하는 차를 피하세요!",
       "timeLimit": 3.5
     },
     {
-      "timestamp": 845,
-      "missionType": "dodge_right",
-      "prompt": "한옥 지붕 사이 좁은 길을 오른쪽으로 피하세요!",
+      "timestamp": 388,
+      "missionType": "dodge_left",
+      "prompt": "오른쪽에서 진입하는 차량을 피하세요!",
       "timeLimit": 3
     }
   ]
