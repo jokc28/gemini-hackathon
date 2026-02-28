@@ -1,0 +1,97 @@
+{
+  "videoId": "o70MzTHHNbI",
+  "videoTitle": "Seoul South Korea 4K .City - Sights - People",
+  "regionName": "Seoul",
+  "missions": [
+    {
+      "timestamp": 18,
+      "missionType": "dodge_left",
+      "prompt": "사람들을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 30,
+      "missionType": "dodge_left",
+      "prompt": "택시를 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 41,
+      "missionType": "dodge_right",
+      "prompt": "차를 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 52,
+      "missionType": "dodge_left",
+      "prompt": "빠르게 다가오는 차를 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 65,
+      "missionType": "dodge_right",
+      "prompt": "자전거를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 79,
+      "missionType": "push",
+      "prompt": "우산 사이를 뚫고 지나가세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 95,
+      "missionType": "dodge_left",
+      "prompt": "사람들을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 120,
+      "missionType": "jump",
+      "prompt": "스포츠카 위로 점프!",
+      "timeLimit": 2
+    },
+    {
+      "timestamp": 137,
+      "missionType": "dodge_right",
+      "prompt": "터널에서 나오는 차를 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 162,
+      "missionType": "catch",
+      "prompt": "버스를 잡으세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 172,
+      "missionType": "push",
+      "prompt": "인파 속을 헤치고 나아가세요!",
+      "timeLimit": 3.5
+    },
+    {
+      "timestamp": 181,
+      "missionType": "jump",
+      "prompt": "앞 사람을 피해 점프!",
+      "timeLimit": 2
+    },
+    {
+      "timestamp": 215,
+      "missionType": "dodge_right",
+      "prompt": "자전거를 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 271,
+      "missionType": "dodge_left",
+      "prompt": "근위병을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 300,
+      "missionType": "dodge_right",
+      "prompt": "시위자를 피하세요!",
+      "timeLimit": 2.5
+    }
+  ]
+}
