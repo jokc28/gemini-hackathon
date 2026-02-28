@@ -1,0 +1,97 @@
+{
+  "videoId": "8Py6kWeG7Eo",
+  "videoTitle": "London Walking Tour 4K 🇬🇧 Oxford Circus | Regent St | Piccadilly Circus",
+  "regionName": "London",
+  "missions": [
+    {
+      "timestamp": 25,
+      "missionType": "dodge_left",
+      "prompt": "왼쪽으로 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 42,
+      "missionType": "dodge_right",
+      "prompt": "릭샤를 피하세요!",
+      "timeLimit": 3.5
+    },
+    {
+      "timestamp": 72,
+      "missionType": "dodge_left",
+      "prompt": "버스를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 96,
+      "missionType": "dodge_left",
+      "prompt": "사람들을 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 113,
+      "missionType": "jump",
+      "prompt": "애플 로고 위로 점프!",
+      "timeLimit": 2
+    },
+    {
+      "timestamp": 136,
+      "missionType": "dodge_right",
+      "prompt": "앉아있는 사람을 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 159,
+      "missionType": "dodge_left",
+      "prompt": "사람들을 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 178,
+      "missionType": "dodge_right",
+      "prompt": "자전거를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 197,
+      "missionType": "push",
+      "prompt": "트럭을 밀어내세요!",
+      "timeLimit": 3.5
+    },
+    {
+      "timestamp": 211,
+      "missionType": "dodge_left",
+      "prompt": "택시를 피하세요!",
+      "timeLimit": 3
+    },
+    {
+      "timestamp": 236,
+      "missionType": "jump",
+      "prompt": "벤치 위로 점프하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 251,
+      "missionType": "dodge_left",
+      "prompt": "쇼핑객을 피하세요!",
+      "timeLimit": 2
+    },
+    {
+      "timestamp": 276,
+      "missionType": "push",
+      "prompt": "쓰레기차를 밀어내세요!",
+      "timeLimit": 3.5
+    },
+    {
+      "timestamp": 351,
+      "missionType": "dodge_left",
+      "prompt": "통화하는 사람을 피하세요!",
+      "timeLimit": 2.5
+    },
+    {
+      "timestamp": 386,
+      "missionType": "push",
+      "prompt": "사람들을 헤치고 나아가세요!",
+      "timeLimit": 3
+    }
+  ]
+}

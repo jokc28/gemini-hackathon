@@ -1,241 +1,205 @@
-import type { LandmarkFrame, MissionType, MissionResult } from './types';
+/**
+ * detectors.ts — Hackathon-forgiving motion detection.
+ *
+ * All detection uses UPPER BODY only (nose, shoulders, elbows, wrists).
+ * Two APIs:
+ *   detectAction(landmarks, baseline, mission)  → boolean  (single-frame, for game loop)
+ *   detectMission(mission, frames)              → MissionResult (multi-frame, legacy)
+ *
+ * Thresholds are intentionally LOW for smooth demo experience.
+ */
+import type { Landmark, LandmarkFrame, MissionType, MissionResult } from './types';
 
-// MediaPipe Pose landmark indices
-const LEFT_HIP = 23;
-const RIGHT_HIP = 24;
-const LEFT_SHOULDER = 11;
-const RIGHT_SHOULDER = 12;
-const LEFT_WRIST = 15;
-const RIGHT_WRIST = 16;
-const LEFT_ELBOW = 13;
-const RIGHT_ELBOW = 14;
+// ── Landmark indices ──
 const NOSE = 0;
+const L_SHOULDER = 11;
+const R_SHOULDER = 12;
+const L_ELBOW = 13;
+const R_ELBOW = 14;
+const L_WRIST = 15;
+const R_WRIST = 16;
 
-function avg(a: number, b: number) {
+// ── Helpers ──
+function avg(a: number, b: number): number {
   return (a + b) / 2;
 }
 
-function getHipY(frame: LandmarkFrame): number {
-  return avg(frame.landmarks[LEFT_HIP].y, frame.landmarks[RIGHT_HIP].y);
+function dist2d(a: Landmark, b: Landmark): number {
+  return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 }
 
-function getShoulderX(frame: LandmarkFrame): number {
-  return avg(frame.landmarks[LEFT_SHOULDER].x, frame.landmarks[RIGHT_SHOULDER].x);
+function valid(lm: Landmark[], ...indices: number[]): boolean {
+  return indices.every(
+    (i) => lm[i] && lm[i].visibility > 0.3
+  );
 }
 
-function getShoulderY(frame: LandmarkFrame): number {
-  return avg(frame.landmarks[LEFT_SHOULDER].y, frame.landmarks[RIGHT_SHOULDER].y);
+// ── Debug values (exposed for overlay) ──
+export type DebugValues = {
+  noseX: number;
+  noseY: number;
+  noseZ: number;
+  shoulderMidX: number;
+  shoulderMidY: number;
+  wristDistL: number;
+  wristDistR: number;
+  wristMidY: number;
+  wristGap: number;
+};
+
+export function getDebugValues(lm: Landmark[]): DebugValues {
+  const nose = lm[NOSE];
+  const shoulderMidX = avg(lm[L_SHOULDER].x, lm[R_SHOULDER].x);
+  const shoulderMidY = avg(lm[L_SHOULDER].y, lm[R_SHOULDER].y);
+  return {
+    noseX: nose.x,
+    noseY: nose.y,
+    noseZ: nose.z,
+    shoulderMidX,
+    shoulderMidY,
+    wristDistL: dist2d(lm[L_WRIST], lm[L_SHOULDER]),
+    wristDistR: dist2d(lm[R_WRIST], lm[R_SHOULDER]),
+    wristMidY: avg(lm[L_WRIST].y, lm[R_WRIST].y),
+    wristGap: Math.abs(lm[L_WRIST].x - lm[R_WRIST].x),
+  };
 }
 
-// --- Original 6 detectors ---
+// ── Single-frame detection ──
+// `baseline` = landmarks captured when mission starts (the "neutral" pose).
+// `current`  = landmarks from the current frame.
+// Returns true if the motion is detected.
 
-export function detectJump(frames: LandmarkFrame[]): MissionResult {
-  if (frames.length < 8) return miss('jump');
-  const hipYs = frames.map(getHipY);
-  const baseline = hipYs[0];
-  const minY = Math.min(...hipYs);
-  const rise = baseline - minY;
-  const threshold = 0.06;
-  return { missionType: 'jump', success: rise > threshold, confidence: Math.min(rise / 0.12, 1) };
-}
-
-export function detectDodge(frames: LandmarkFrame[], direction: 'left' | 'right'): MissionResult {
-  const missionType: MissionType = direction === 'left' ? 'dodge_left' : 'dodge_right';
-  if (frames.length < 6) return miss(missionType);
-  const xs = frames.map(getShoulderX);
-  const baseline = xs[0];
-  const diffs = xs.map((x) => x - baseline);
-  const maxShift = direction === 'left' ? Math.max(...diffs) : Math.max(...diffs.map((d) => -d));
-  const threshold = 0.08;
-  return { missionType, success: maxShift > threshold, confidence: Math.min(maxShift / 0.15, 1) };
-}
-
-export function detectPush(frames: LandmarkFrame[]): MissionResult {
-  if (frames.length < 6) return miss('push');
-  const first = frames[0];
-  const last = frames[frames.length - 1];
-  const wristZStart = avg(first.landmarks[LEFT_WRIST].z, first.landmarks[RIGHT_WRIST].z);
-  const wristZEnd = avg(last.landmarks[LEFT_WRIST].z, last.landmarks[RIGHT_WRIST].z);
-  const wristYEnd = avg(last.landmarks[LEFT_WRIST].y, last.landmarks[RIGHT_WRIST].y);
-  const shoulderYEnd = getShoulderY(last);
-  const armsRaised = wristYEnd < shoulderYEnd + 0.1;
-  const zForward = wristZStart - wristZEnd;
-  const threshold = 0.05;
-  return { missionType: 'push', success: zForward > threshold && armsRaised, confidence: Math.min(zForward / 0.1, 1) };
-}
-
-export function detectCatch(frames: LandmarkFrame[]): MissionResult {
-  if (frames.length < 6) return miss('catch');
-  const last = frames[frames.length - 1];
-  const lw = last.landmarks[LEFT_WRIST];
-  const rw = last.landmarks[RIGHT_WRIST];
-  const wristDist = Math.abs(lw.x - rw.x);
-  const close = wristDist < 0.25;
-  const hipY = getHipY(last);
-  const wristY = avg(lw.y, rw.y);
-  const raised = wristY < hipY;
-  const shoulderZ = avg(last.landmarks[LEFT_SHOULDER].z, last.landmarks[RIGHT_SHOULDER].z);
-  const wristZ = avg(lw.z, rw.z);
-  const forward = wristZ < shoulderZ;
-  const success = close && raised && forward;
-  const rawConf = (close ? 0.33 : 0) + (raised ? 0.33 : 0) + (forward ? 0.34 : 0);
-  return { missionType: 'catch', success, confidence: Math.min(rawConf, 1) };
-}
-
-export function detectThrow(frames: LandmarkFrame[]): MissionResult {
-  if (frames.length < 6) return miss('throw');
-  const recentFrames = frames.slice(-6);
-  let maxVelocity = 0;
-  for (let i = 1; i < recentFrames.length; i++) {
-    const prev = recentFrames[i - 1];
-    const curr = recentFrames[i];
-    const dt = (curr.timestamp - prev.timestamp) / 1000;
-    if (dt === 0) continue;
-    for (const wristIdx of [LEFT_WRIST, RIGHT_WRIST]) {
-      const dz = prev.landmarks[wristIdx].z - curr.landmarks[wristIdx].z;
-      const dy = prev.landmarks[wristIdx].y - curr.landmarks[wristIdx].y;
-      const velocity = Math.sqrt(dz * dz + dy * dy) / dt;
-      maxVelocity = Math.max(maxVelocity, velocity);
-    }
-  }
-  const threshold = 0.8;
-  return { missionType: 'throw', success: maxVelocity > threshold, confidence: Math.min(maxVelocity / 1.5, 1) };
-}
-
-// --- New detectors ---
-
-/**
- * detectDuck: head (nose) drops below shoulder level — crouching/ducking.
- */
-export function detectDuck(frames: LandmarkFrame[]): MissionResult {
-  if (frames.length < 6) return miss('duck');
-  const first = frames[0];
-  const last = frames[frames.length - 1];
-  const noseYStart = first.landmarks[NOSE].y;
-  const noseYEnd = last.landmarks[NOSE].y;
-  const shoulderYEnd = getShoulderY(last);
-  // Nose dropped significantly AND nose is near/below shoulder line
-  const drop = noseYEnd - noseYStart; // positive = moved down
-  const nearShoulders = noseYEnd > shoulderYEnd - 0.05;
-  const threshold = 0.06;
-  const success = drop > threshold && nearShoulders;
-  return { missionType: 'duck', success, confidence: Math.min(drop / 0.12, 1) };
-}
-
-/**
- * detectWave: one wrist oscillates laterally above shoulder level (side-to-side).
- */
-export function detectWave(frames: LandmarkFrame[]): MissionResult {
-  if (frames.length < 10) return miss('wave');
-
-  let bestScore = 0;
-  for (const wristIdx of [LEFT_WRIST, RIGHT_WRIST]) {
-    const xs = frames.map((f) => f.landmarks[wristIdx].x);
-    const ys = frames.map((f) => f.landmarks[wristIdx].y);
-    const shoulderYs = frames.map(getShoulderY);
-
-    // Check wrist is above shoulder for most frames
-    const aboveCount = ys.filter((y, i) => y < shoulderYs[i]).length;
-    if (aboveCount < frames.length * 0.5) continue;
-
-    // Count direction changes in x (oscillations)
-    let directionChanges = 0;
-    for (let i = 2; i < xs.length; i++) {
-      const prevDir = xs[i - 1] - xs[i - 2];
-      const currDir = xs[i] - xs[i - 1];
-      if (prevDir * currDir < 0 && Math.abs(currDir) > 0.005) {
-        directionChanges++;
-      }
-    }
-    bestScore = Math.max(bestScore, directionChanges);
+export function detectAction(
+  current: Landmark[],
+  baseline: Landmark[],
+  mission: MissionType
+): boolean {
+  if (!current || current.length < 17 || !baseline || baseline.length < 17) {
+    return false;
   }
 
-  const threshold = 2; // at least 2 direction changes = wave
-  const success = bestScore >= threshold;
-  return { missionType: 'wave', success, confidence: Math.min(bestScore / 4, 1) };
+  switch (mission) {
+    case 'jump':       return detectJumpSingle(current, baseline);
+    case 'dodge_left':  return detectDodgeSingle(current, baseline, 'left');
+    case 'dodge_right': return detectDodgeSingle(current, baseline, 'right');
+    case 'push':       return detectPushSingle(current, baseline);
+    case 'catch':      return detectCatchSingle(current);
+    case 'throw':      return detectThrowSingle(current, baseline);
+    case 'duck':       return detectDuckSingle(current, baseline);
+    case 'wave':       return detectWaveSingle(current);
+    case 'clap':       return detectClapSingle(current);
+    case 'punch':      return detectPunchSingle(current, baseline);
+  }
 }
 
-/**
- * detectClap: both wrists start apart and rapidly come close together.
- */
-export function detectClap(frames: LandmarkFrame[]): MissionResult {
-  if (frames.length < 6) return miss('clap');
-
-  const distances = frames.map((f) => {
-    const lw = f.landmarks[LEFT_WRIST];
-    const rw = f.landmarks[RIGHT_WRIST];
-    return Math.sqrt((lw.x - rw.x) ** 2 + (lw.y - rw.y) ** 2);
-  });
-
-  const maxDist = Math.max(...distances.slice(0, Math.floor(distances.length / 2)));
-  const minDist = Math.min(...distances.slice(Math.floor(distances.length / 2)));
-  const convergence = maxDist - minDist;
-
-  // Wrists must also be above hips
-  const last = frames[frames.length - 1];
-  const hipY = getHipY(last);
-  const wristY = avg(last.landmarks[LEFT_WRIST].y, last.landmarks[RIGHT_WRIST].y);
-  const raised = wristY < hipY;
-
-  const threshold = 0.15;
-  const success = convergence > threshold && minDist < 0.1 && raised;
-  return { missionType: 'clap', success, confidence: Math.min(convergence / 0.25, 1) };
+// ── JUMP: Nose Y goes UP (decreases) by 0.04 from baseline ──
+function detectJumpSingle(cur: Landmark[], base: Landmark[]): boolean {
+  if (!valid(cur, NOSE)) return false;
+  const delta = base[NOSE].y - cur[NOSE].y; // positive = moved up
+  return delta > 0.04;
 }
 
-/**
- * detectPunch: one wrist rapidly extends forward (z decreases) while the other stays back.
- * Differs from push: only ONE arm, and faster velocity required.
- */
-export function detectPunch(frames: LandmarkFrame[]): MissionResult {
-  if (frames.length < 6) return miss('punch');
-  const recentFrames = frames.slice(-6);
-  let bestPunchScore = 0;
+// ── DODGE: Nose X shifts by 0.06 from baseline ──
+// Raw camera: user moves LEFT in mirror = nose X INCREASES in raw coords.
+function detectDodgeSingle(
+  cur: Landmark[],
+  base: Landmark[],
+  direction: 'left' | 'right'
+): boolean {
+  if (!valid(cur, NOSE)) return false;
+  const delta = cur[NOSE].x - base[NOSE].x;
+  // User's left = raw X increases (camera sees them go right)
+  return direction === 'left' ? delta > 0.06 : delta < -0.06;
+}
 
-  for (const [punchWrist, otherWrist] of [[LEFT_WRIST, RIGHT_WRIST], [RIGHT_WRIST, LEFT_WRIST]]) {
-    let maxVel = 0;
-    for (let i = 1; i < recentFrames.length; i++) {
-      const prev = recentFrames[i - 1];
-      const curr = recentFrames[i];
-      const dt = (curr.timestamp - prev.timestamp) / 1000;
-      if (dt === 0) continue;
-      const dz = prev.landmarks[punchWrist].z - curr.landmarks[punchWrist].z;
-      const vel = dz / dt; // positive = forward
-      maxVel = Math.max(maxVel, vel);
-    }
+// ── PUSH: Both wrist-to-shoulder distances extend by 0.05 ──
+function detectPushSingle(cur: Landmark[], base: Landmark[]): boolean {
+  if (!valid(cur, L_WRIST, R_WRIST, L_SHOULDER, R_SHOULDER)) return false;
+  const curDistL = dist2d(cur[L_WRIST], cur[L_SHOULDER]);
+  const curDistR = dist2d(cur[R_WRIST], cur[R_SHOULDER]);
+  const baseDistL = dist2d(base[L_WRIST], base[L_SHOULDER]);
+  const baseDistR = dist2d(base[R_WRIST], base[R_SHOULDER]);
+  const avgExtension = avg(curDistL - baseDistL, curDistR - baseDistR);
+  return avgExtension > 0.05;
+}
 
-    // Other wrist should be relatively still (not both extending = push)
-    const otherZ0 = recentFrames[0].landmarks[otherWrist].z;
-    const otherZ1 = recentFrames[recentFrames.length - 1].landmarks[otherWrist].z;
-    const otherMoved = Math.abs(otherZ0 - otherZ1);
-    const oneArm = otherMoved < 0.03;
+// ── CATCH: Both wrists close together (gap < 0.12) AND above shoulders ──
+function detectCatchSingle(cur: Landmark[]): boolean {
+  if (!valid(cur, L_WRIST, R_WRIST, L_SHOULDER, R_SHOULDER)) return false;
+  const gap = Math.abs(cur[L_WRIST].x - cur[R_WRIST].x);
+  const wristY = avg(cur[L_WRIST].y, cur[R_WRIST].y);
+  const shoulderY = avg(cur[L_SHOULDER].y, cur[R_SHOULDER].y);
+  return gap < 0.15 && wristY < shoulderY;
+}
 
-    if (oneArm) {
-      bestPunchScore = Math.max(bestPunchScore, maxVel);
-    }
+// ── THROW: Either wrist moves far from baseline (distance > 0.12) ──
+function detectThrowSingle(cur: Landmark[], base: Landmark[]): boolean {
+  if (!valid(cur, L_WRIST, R_WRIST)) return false;
+  const dL = dist2d(cur[L_WRIST], base[L_WRIST]);
+  const dR = dist2d(cur[R_WRIST], base[R_WRIST]);
+  return Math.max(dL, dR) > 0.12;
+}
+
+// ── DUCK: Nose Y goes DOWN (increases) by 0.05 from baseline ──
+function detectDuckSingle(cur: Landmark[], base: Landmark[]): boolean {
+  if (!valid(cur, NOSE)) return false;
+  const delta = cur[NOSE].y - base[NOSE].y; // positive = moved down
+  return delta > 0.05;
+}
+
+// ── WAVE: Either wrist is above nose AND far from shoulder horizontally ──
+function detectWaveSingle(cur: Landmark[]): boolean {
+  if (!valid(cur, L_WRIST, R_WRIST, NOSE, L_SHOULDER, R_SHOULDER)) return false;
+  for (const [wrist, shoulder] of [[L_WRIST, L_SHOULDER], [R_WRIST, R_SHOULDER]] as const) {
+    const aboveNose = cur[wrist].y < cur[NOSE].y;
+    const farFromShoulder = Math.abs(cur[wrist].x - cur[shoulder].x) > 0.1;
+    if (aboveNose && farFromShoulder) return true;
+  }
+  return false;
+}
+
+// ── CLAP: Both wrists close (gap < 0.08) AND both above hip-level (wrist Y < 0.65) ──
+function detectClapSingle(cur: Landmark[]): boolean {
+  if (!valid(cur, L_WRIST, R_WRIST)) return false;
+  const gap = Math.abs(cur[L_WRIST].x - cur[R_WRIST].x);
+  const wristY = avg(cur[L_WRIST].y, cur[R_WRIST].y);
+  return gap < 0.1 && wristY < 0.65;
+}
+
+// ── PUNCH: One wrist extends far forward (dist > 0.1) while other stays near baseline ──
+function detectPunchSingle(cur: Landmark[], base: Landmark[]): boolean {
+  if (!valid(cur, L_WRIST, R_WRIST)) return false;
+  const dL = dist2d(cur[L_WRIST], base[L_WRIST]);
+  const dR = dist2d(cur[R_WRIST], base[R_WRIST]);
+  const one = Math.max(dL, dR);
+  const other = Math.min(dL, dR);
+  return one > 0.1 && other < 0.06;
+}
+
+// ── Multi-frame API (legacy compat for useMotionGame) ──
+
+export function detectMission(
+  missionType: MissionType,
+  frames: LandmarkFrame[]
+): MissionResult {
+  if (frames.length < 3) return miss(missionType);
+
+  const baseline = frames[0].landmarks;
+  const current = frames[frames.length - 1].landmarks;
+  const success = detectAction(current, baseline, missionType);
+
+  // Compute a rough confidence from the middle of the buffer
+  let confidence = 0;
+  if (success) {
+    const hits = frames.filter((f) =>
+      detectAction(f.landmarks, baseline, missionType)
+    ).length;
+    confidence = Math.min(hits / frames.length + 0.3, 1);
   }
 
-  const threshold = 0.5;
-  const success = bestPunchScore > threshold;
-  return { missionType: 'punch', success, confidence: Math.min(bestPunchScore / 1.0, 1) };
+  return { missionType, success, confidence };
 }
-
-// --- Utility ---
 
 function miss(type: MissionType): MissionResult {
   return { missionType: type, success: false, confidence: 0 };
-}
-
-export function detectMission(missionType: MissionType, frames: LandmarkFrame[]): MissionResult {
-  switch (missionType) {
-    case 'jump': return detectJump(frames);
-    case 'dodge_left': return detectDodge(frames, 'left');
-    case 'dodge_right': return detectDodge(frames, 'right');
-    case 'push': return detectPush(frames);
-    case 'catch': return detectCatch(frames);
-    case 'throw': return detectThrow(frames);
-    case 'duck': return detectDuck(frames);
-    case 'wave': return detectWave(frames);
-    case 'clap': return detectClap(frames);
-    case 'punch': return detectPunch(frames);
-  }
 }

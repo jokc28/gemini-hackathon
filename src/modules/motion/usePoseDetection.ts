@@ -1,55 +1,86 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { PoseLandmarker, FilesetResolver, DrawingUtils } from '@mediapipe/tasks-vision';
-import type { LandmarkFrame } from './types';
+import {
+  PoseLandmarker,
+  FilesetResolver,
+  DrawingUtils,
+} from '@mediapipe/tasks-vision';
+import type { LandmarkFrame, Landmark } from './types';
 
-const FRAME_BUFFER_SIZE = 15;
+const FRAME_BUFFER_SIZE = 20;
+const MODEL_URL =
+  'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+const WASM_CDN =
+  'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm';
 
-export function usePoseDetection() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const videoElRef = useRef<HTMLVideoElement | null>(null);
+export type UsePoseDetectionOptions = {
+  /** Draw skeleton overlay on canvas. Default true. */
+  drawSkeleton?: boolean;
+  /** Mirror the video + skeleton horizontally (selfie mode). Default true. */
+  mirror?: boolean;
+};
+
+export type UsePoseDetectionReturn = {
+  /** Ref to attach to a visible <canvas> element. */
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  /** True once MediaPipe model is loaded AND webcam is streaming. */
+  isReady: boolean;
+  /** Non-null if init failed (permission denied, no camera, etc.). */
+  error: string | null;
+  /** Returns the latest N frames of raw landmark data. */
+  getFrameBuffer: () => LandmarkFrame[];
+  /** Returns the most recent single frame's landmarks, or null. */
+  getLatestLandmarks: () => Landmark[] | null;
+};
+
+export function usePoseDetection(
+  opts: UsePoseDetectionOptions = {}
+): UsePoseDetectionReturn {
+  const { drawSkeleton = true, mirror = true } = opts;
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const landmarkerRef = useRef<PoseLandmarker | null>(null);
-  const animationRef = useRef<number>(0);
+  const animFrameRef = useRef<number>(0);
+  const frameBufferRef = useRef<LandmarkFrame[]>([]);
+  const latestLandmarksRef = useRef<Landmark[] | null>(null);
+
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const frameBufferRef = useRef<LandmarkFrame[]>([]);
 
   const getFrameBuffer = useCallback(() => frameBufferRef.current, []);
+  const getLatestLandmarks = useCallback(() => latestLandmarksRef.current, []);
 
   useEffect(() => {
     let cancelled = false;
 
     async function init() {
       try {
-        // Create a hidden video element programmatically (no DOM attachment needed)
+        // 1. Create hidden video element
         const video = document.createElement('video');
         video.setAttribute('playsinline', 'true');
         video.setAttribute('autoplay', 'true');
         video.muted = true;
-        videoElRef.current = video;
+        videoRef.current = video;
 
-        const vision = await FilesetResolver.forVisionTasks(
-          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
-        );
-
+        // 2. Load MediaPipe WASM + model
+        const vision = await FilesetResolver.forVisionTasks(WASM_CDN);
         if (cancelled) return;
 
         const landmarker = await PoseLandmarker.createFromOptions(vision, {
           baseOptions: {
-            modelAssetPath:
-              'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
+            modelAssetPath: MODEL_URL,
             delegate: 'GPU',
           },
           runningMode: 'VIDEO',
           numPoses: 1,
         });
-
         if (cancelled) return;
         landmarkerRef.current = landmarker;
 
+        // 3. Get webcam stream
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { width: 640, height: 480, facingMode: 'user' },
         });
-
         if (cancelled) {
           stream.getTracks().forEach((t) => t.stop());
           return;
@@ -59,103 +90,121 @@ export function usePoseDetection() {
         await video.play();
 
         setIsReady(true);
-        startDetectionLoop(video);
+        loop(video);
       } catch (e) {
         if (!cancelled) {
-          const msg = e instanceof Error ? e.message : 'Failed to initialize';
-          console.error('Motion init error:', e);
+          const msg = e instanceof Error ? e.message : String(e);
+          console.error('[usePoseDetection] init failed:', msg);
           setError(msg);
         }
       }
     }
 
-    function startDetectionLoop(video: HTMLVideoElement) {
+    function loop(video: HTMLVideoElement) {
       const canvas = canvasRef.current;
       if (!canvas) {
-        setError('Canvas element not found');
+        // Canvas not mounted yet — retry next frame
+        animFrameRef.current = requestAnimationFrame(() => loop(video));
         return;
       }
-      const ctx = canvas.getContext('2d')!;
-      const drawingUtils = new DrawingUtils(ctx);
-      let lastTimestamp = -1;
 
-      function detect() {
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      const drawUtils = drawSkeleton ? new DrawingUtils(ctx) : null;
+      let lastTs = -1;
+
+      function tick() {
         if (cancelled) return;
-
-        if (!landmarkerRef.current || video.readyState < 2) {
-          animationRef.current = requestAnimationFrame(detect);
+        const lm = landmarkerRef.current;
+        if (!lm || video.readyState < 2) {
+          animFrameRef.current = requestAnimationFrame(tick);
           return;
         }
 
         const now = performance.now();
-        if (now === lastTimestamp) {
-          animationRef.current = requestAnimationFrame(detect);
+        if (now === lastTs) {
+          animFrameRef.current = requestAnimationFrame(tick);
           return;
         }
-        lastTimestamp = now;
+        lastTs = now;
 
-        const result = landmarkerRef.current.detectForVideo(video, now);
+        // Detect
+        const result = lm.detectForVideo(video, now);
 
+        // Size canvas to match video
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw video frame (mirrored)
+        // Draw video frame
         ctx.save();
-        ctx.scale(-1, 1);
-        ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+        if (mirror) {
+          ctx.scale(-1, 1);
+          ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+        } else {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
         ctx.restore();
 
+        // Process landmarks
         if (result.landmarks && result.landmarks.length > 0) {
-          const landmarks = result.landmarks[0];
+          const raw = result.landmarks[0];
 
-          // Mirror landmarks for display
-          const mirrored = landmarks.map((l) => ({ ...l, x: 1 - l.x }));
+          // Store raw (un-mirrored) landmarks
+          const landmarks: Landmark[] = raw.map((l) => ({
+            x: l.x,
+            y: l.y,
+            z: l.z,
+            visibility: l.visibility ?? 0,
+          }));
+          latestLandmarksRef.current = landmarks;
 
-          drawingUtils.drawLandmarks(mirrored, {
-            radius: 3,
-            color: '#00FF00',
-            fillColor: '#00FF00',
-          });
-          drawingUtils.drawConnectors(mirrored, PoseLandmarker.POSE_CONNECTIONS, {
-            color: '#00FFFF',
-            lineWidth: 2,
-          });
-
-          // Store raw (unmirrored) landmarks in frame buffer
-          const frame: LandmarkFrame = {
-            landmarks: landmarks.map((l) => ({
-              x: l.x,
-              y: l.y,
-              z: l.z,
-              visibility: l.visibility ?? 0,
-            })),
-            timestamp: now,
-          };
-
-          frameBufferRef.current.push(frame);
+          // Push to ring buffer
+          frameBufferRef.current.push({ landmarks, timestamp: now });
           if (frameBufferRef.current.length > FRAME_BUFFER_SIZE) {
             frameBufferRef.current.shift();
           }
+
+          // Draw skeleton (mirrored for display)
+          if (drawUtils) {
+            const display = mirror
+              ? raw.map((l) => ({ ...l, x: 1 - l.x }))
+              : raw;
+
+            drawUtils.drawLandmarks(display, {
+              radius: 4,
+              color: '#00FF00',
+              fillColor: '#00FF00',
+            });
+            drawUtils.drawConnectors(
+              display,
+              PoseLandmarker.POSE_CONNECTIONS,
+              { color: '#00FFFF', lineWidth: 2 }
+            );
+          }
+        } else {
+          latestLandmarksRef.current = null;
         }
 
-        animationRef.current = requestAnimationFrame(detect);
+        animFrameRef.current = requestAnimationFrame(tick);
       }
 
-      detect();
+      tick();
     }
 
     init();
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(animationRef.current);
-      if (videoElRef.current?.srcObject) {
-        (videoElRef.current.srcObject as MediaStream).getTracks().forEach((t) => t.stop());
+      cancelAnimationFrame(animFrameRef.current);
+      if (videoRef.current?.srcObject) {
+        (videoRef.current.srcObject as MediaStream)
+          .getTracks()
+          .forEach((t) => t.stop());
       }
       landmarkerRef.current?.close();
     };
-  }, []);
+  }, [drawSkeleton, mirror]);
 
-  return { canvasRef, isReady, error, getFrameBuffer };
+  return { canvasRef, isReady, error, getFrameBuffer, getLatestLandmarks };
 }

@@ -1,34 +1,16 @@
 /**
- * useMotionGame — Integration hook for Person C's frontend.
+ * useMotionGame — Integration hook for Person C.
  *
- * This is the primary API surface that C should use.
- * It connects the webcam/pose detection (A) with mission data from B,
+ * Connects webcam pose detection (A) with mission data from B,
  * synchronized to YouTube video playback timestamps.
  *
- * Usage in C's component:
- * ```tsx
- * const {
- *   canvasRef,           // attach to <canvas> for webcam + skeleton
- *   isReady,             // true when MediaPipe + webcam are loaded
- *   activeMission,       // current mission being detected (or null)
- *   lastResult,          // most recent MissionResult
- *   timeLeft,            // countdown for current mission
- *   score,               // { success: number, total: number }
- *   feedVideoTime,       // call this every frame with YouTube player's currentTime
- * } = useMotionGame({
- *   missions,            // MissionTimestamp[] from B module
- *   onMissionResult,     // callback: (result: MissionResult) => void
- *   onAllComplete,       // callback: (results: MissionResult[]) => void
- * });
- *
- * // In your YouTube player's timeupdate loop:
- * feedVideoTime(player.getCurrentTime());
- * ```
+ * Uses the single-frame detectAction API with baseline capture
+ * for hackathon-forgiving detection.
  */
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { usePoseDetection } from './usePoseDetection';
-import { detectMission } from './detectors';
-import type { MissionTimestamp, MissionResult, MissionType } from './types';
+import { detectAction } from './detectors';
+import type { MissionTimestamp, MissionResult, MissionType, Landmark } from './types';
 
 type UseMotionGameOptions = {
   missions: MissionTimestamp[];
@@ -37,7 +19,7 @@ type UseMotionGameOptions = {
 };
 
 export function useMotionGame({ missions, onMissionResult, onAllComplete }: UseMotionGameOptions) {
-  const { canvasRef, isReady, error, getFrameBuffer } = usePoseDetection();
+  const { canvasRef, isReady, error, getLatestLandmarks } = usePoseDetection();
   const [activeMission, setActiveMission] = useState<MissionTimestamp | null>(null);
   const [activeMissionIndex, setActiveMissionIndex] = useState<number>(-1);
   const [lastResult, setLastResult] = useState<MissionResult | null>(null);
@@ -45,12 +27,12 @@ export function useMotionGame({ missions, onMissionResult, onAllComplete }: UseM
   const [results, setResults] = useState<MissionResult[]>([]);
   const [detecting, setDetecting] = useState(false);
 
-  const detectIntervalRef = useRef<number>(0);
-  const timerRef = useRef<number>(0);
+  const baselineRef = useRef<Landmark[] | null>(null);
+  const detectLoopRef = useRef<number>(0);
+  const timerLoopRef = useRef<number>(0);
   const triggeredRef = useRef<Set<number>>(new Set());
   const allResultsRef = useRef<MissionResult[]>([]);
 
-  // Reset when missions change
   useEffect(() => {
     triggeredRef.current = new Set();
     allResultsRef.current = [];
@@ -61,11 +43,10 @@ export function useMotionGame({ missions, onMissionResult, onAllComplete }: UseM
   }, [missions]);
 
   const clearTimers = useCallback(() => {
-    clearInterval(detectIntervalRef.current);
-    clearInterval(timerRef.current);
+    clearInterval(detectLoopRef.current);
+    clearInterval(timerLoopRef.current);
   }, []);
 
-  // Normalize B's dodge format: { missionType: "dodge", direction: "left" } → "dodge_left"
   const normalizeMissionType = useCallback((mission: MissionTimestamp): MissionType => {
     if ((mission.missionType as string) === 'dodge' && mission.direction) {
       return mission.direction === 'left' ? 'dodge_left' : 'dodge_right';
@@ -79,6 +60,11 @@ export function useMotionGame({ missions, onMissionResult, onAllComplete }: UseM
       const missionType = normalizeMissionType(mission);
       const timeLimit = mission.timeLimit || 3;
 
+      // Capture baseline
+      const baseline = getLatestLandmarks();
+      if (!baseline) return;
+      baselineRef.current = [...baseline];
+
       setActiveMission(mission);
       setActiveMissionIndex(index);
       setDetecting(true);
@@ -87,17 +73,21 @@ export function useMotionGame({ missions, onMissionResult, onAllComplete }: UseM
 
       const startTime = Date.now();
 
-      timerRef.current = window.setInterval(() => {
-        const elapsed = (Date.now() - startTime) / 1000;
-        setTimeLeft(Math.max(0, timeLimit - elapsed));
+      timerLoopRef.current = window.setInterval(() => {
+        const remaining = Math.max(0, timeLimit - (Date.now() - startTime) / 1000);
+        setTimeLeft(remaining);
       }, 50);
 
-      detectIntervalRef.current = window.setInterval(() => {
-        const frames = getFrameBuffer();
-        const result = detectMission(missionType, frames);
+      detectLoopRef.current = window.setInterval(() => {
+        const current = getLatestLandmarks();
+        if (!current || !baselineRef.current) return;
 
-        const done = (r: MissionResult) => {
+        const hit = detectAction(current, baselineRef.current, missionType);
+        const elapsed = (Date.now() - startTime) / 1000;
+
+        const done = (success: boolean) => {
           clearTimers();
+          const r: MissionResult = { missionType, success, confidence: success ? 0.9 : 0 };
           setLastResult(r);
           setDetecting(false);
           setActiveMission(null);
@@ -107,39 +97,27 @@ export function useMotionGame({ missions, onMissionResult, onAllComplete }: UseM
           setResults([...allResultsRef.current]);
 
           onMissionResult?.(r, index);
-
-          // Check if all missions done
           if (allResultsRef.current.length === missions.length) {
             onAllComplete?.(allResultsRef.current);
           }
         };
 
-        if (result.success) {
-          done(result);
-        } else if (Date.now() - startTime > timeLimit * 1000) {
-          done({ missionType, success: false, confidence: 0 });
-        }
-      }, 100);
+        if (hit) done(true);
+        else if (elapsed >= timeLimit) done(false);
+      }, 33);
     },
-    [clearTimers, getFrameBuffer, missions.length, normalizeMissionType, onMissionResult, onAllComplete]
+    [clearTimers, getLatestLandmarks, missions.length, normalizeMissionType, onMissionResult, onAllComplete]
   );
 
-  /**
-   * feedVideoTime — call this with the YouTube player's currentTime (seconds).
-   * When a mission's timestamp is reached, detection starts automatically.
-   */
   const feedVideoTime = useCallback(
     (currentTime: number) => {
       if (!isReady || detecting) return;
-
       for (let i = 0; i < missions.length; i++) {
         if (triggeredRef.current.has(i)) continue;
-
-        const mission = missions[i];
-        // Trigger when video time reaches mission timestamp (within 0.5s window)
-        if (currentTime >= mission.timestamp && currentTime < mission.timestamp + 0.5) {
+        const m = missions[i];
+        if (currentTime >= m.timestamp && currentTime < m.timestamp + 0.5) {
           triggeredRef.current.add(i);
-          runDetection(mission, i);
+          runDetection(m, i);
           break;
         }
       }
@@ -147,18 +125,9 @@ export function useMotionGame({ missions, onMissionResult, onAllComplete }: UseM
     [isReady, detecting, missions, runDetection]
   );
 
-  /**
-   * startMission — manually trigger a specific mission (for testing or non-video use).
-   * C can use this directly without video timestamp sync.
-   */
   const startMission = useCallback(
     (missionType: MissionType, timeLimit = 3) => {
-      const mission: MissionTimestamp = {
-        timestamp: 0,
-        missionType,
-        prompt: '',
-        timeLimit,
-      };
+      const mission: MissionTimestamp = { timestamp: 0, missionType, prompt: '', timeLimit };
       runDetection(mission, allResultsRef.current.length);
     },
     [runDetection]
@@ -169,30 +138,12 @@ export function useMotionGame({ missions, onMissionResult, onAllComplete }: UseM
     total: results.length,
   };
 
-  useEffect(() => {
-    return clearTimers;
-  }, [clearTimers]);
+  useEffect(() => clearTimers, [clearTimers]);
 
   return {
-    // Webcam
-    canvasRef,
-    isReady,
-    error,
-
-    // Mission state
-    activeMission,
-    activeMissionIndex,
-    lastResult,
-    timeLeft,
-    detecting,
-
-    // Score
-    results,
-    score,
-
-    // API for C
-    feedVideoTime,
-    startMission,
-    getFrameBuffer,
+    canvasRef, isReady, error,
+    activeMission, activeMissionIndex, lastResult, timeLeft, detecting,
+    results, score,
+    feedVideoTime, startMission, getLatestLandmarks,
   };
 }

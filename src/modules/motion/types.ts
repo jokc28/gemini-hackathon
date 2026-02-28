@@ -1,37 +1,53 @@
-// Core 6 types from shared spec (B module generates these via Gemini)
+// Core 6 types — B module generates these via Gemini
 export type CoreMissionType = 'jump' | 'dodge_left' | 'dodge_right' | 'push' | 'catch' | 'throw';
 
-// Extended types (A module extras, for combo mode / future Gemini prompts)
+// Extended types — A module extras for combo mode
 export type ExtendedMissionType = 'duck' | 'wave' | 'clap' | 'punch';
 
-// Union of all supported mission types
+// All supported mission types
 export type MissionType = CoreMissionType | ExtendedMissionType;
 
-// Matches B module's output format exactly
+// B module's per-timestamp mission
 export type MissionTimestamp = {
-  timestamp: number;      // video playback second
+  timestamp: number;
   missionType: MissionType;
-  prompt: string;         // display text e.g. "점프하세요!"
-  timeLimit: number;      // detection window in seconds, default 3
-  direction?: 'left' | 'right'; // optional, for B's dodge format compatibility
+  prompt: string;
+  timeLimit: number;
+  direction?: 'left' | 'right';
 };
 
-// Matches shared spec: { missionType, success, confidence }
+// Detection result — shared contract
 export type MissionResult = {
   missionType: MissionType;
   success: boolean;
   confidence: number;
 };
 
-// B module's output: region → video + missions
+// B module's region output
 export type RegionMissionData = {
   videoId: string;
+  videoTitle?: string;  // added by B module
   regionName: string;
   missions: MissionTimestamp[];
 };
 
-// Internal: pose landmark frame buffer
+// B module: YouTube search result
+export type VideoSearchResult = {
+  videoId: string;
+  title: string;
+  thumbnailUrl: string;
+};
+
+// Single normalized landmark point
+export type Landmark = {
+  x: number;  // 0-1, left to right in camera frame
+  y: number;  // 0-1, top to bottom
+  z: number;  // depth, negative = closer to camera
+  visibility: number;
+};
+
+// A single frame of pose data
 export type LandmarkFrame = {
-  landmarks: { x: number; y: number; z: number; visibility: number }[];
+  landmarks: Landmark[];
   timestamp: number;
 };
